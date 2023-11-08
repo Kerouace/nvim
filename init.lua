@@ -87,7 +87,7 @@ require('lazy').setup({
   'tpope/vim-rhubarb',	-- [Okay?]
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',	-- [okay]
+  -- 'tpope/vim-sleuth',	-- [okay]
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -100,7 +100,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} }, -- [Okay? - How distracting is this?]
+      { 'j-hui/fidget.nvim', tag = "legacy", event = "LspAttach", opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       -- Completion etc. for nvim lua API
@@ -127,54 +127,8 @@ require('lazy').setup({
     },
   },
 
-  -- {'ray-x/lsp_signature.nvim'},
-
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} }, -- [Okay?]
-
-  { -- Adds git releated signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',  -- [Okay?]
-    opts = {
-      -- See `:help gitsigns.txt`
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-      on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
-        vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
-        vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
-      end,
-    },
-  },
-
-  { -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim', --[Okay?]
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'gruvbox',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
-
-  { -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim', -- [Okay?] replace by mini alternative? perhaps add show_current_context{_start}?
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    opts = {
-      -- char = '┊',
-      show_trailing_blankline_indent = false,
-      show_current_context = true,
-      -- TODO: add rainbow brackets
-    },
-  },
+  { 'folke/which-key.nvim', opts = {} }, -- [okay]
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} }, -- [Okay?]
