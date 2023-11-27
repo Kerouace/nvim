@@ -14,7 +14,13 @@ return {
               work = "~/sync/work/notes",
             },
             default_workspace = "work",
-            index = "index.norg"
+            index = "index.norg",
+          },
+        },
+        ["core.journal"] = {
+          config = {
+            journal_folder = "journal",
+            workspace = "work",
           },
         },
       },
