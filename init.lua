@@ -201,6 +201,9 @@ vim.o.scrolloff = 10
 -- Minimum number of lines right and left of the cursor
 vim.o.sidescrolloff = 8
 
+-- Set cursorline on as default
+vim.o.cursorline = true
+
 -- highlight sage  as python
 vim.filetype.add({
   extension = {
