@@ -12,6 +12,7 @@ return {
           config = {
             workspaces = {
               work = "~/sync/work/notes",
+              priv = "~/sync/priv/notes",
             },
             default_workspace = "work",
             index = "index.norg",
