@@ -68,7 +68,7 @@ require('lazy').setup({
   {
     "L3MON4D3/LuaSnip",
     -- follow latest release.
-    version = "1.*",
+    version = "v2.*",
     -- install jsregexp (optional!).
     build = "make install_jsregexp"
   },
@@ -573,12 +573,19 @@ local lspkind = require 'lspkind'
 
 luasnip.config.setup {}
 
+local has_words_before = function()
+  unpack = unpack or table.unpack
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
 cmp.setup {
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)
     end,
   },
+
   mapping = cmp.mapping.preset.insert {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -592,10 +599,13 @@ cmp.setup {
         cmp.select_next_item()
       elseif luasnip.expand_or_locally_jumpable() then
         luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
       else
         fallback()
       end
     end, { 'i', 's' }),
+
     ['<S-Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
@@ -695,6 +705,7 @@ require("luasnip").config.set_config({
 })
 
 require("luasnip.loaders.from_lua").lazy_load("$XDG_CONFIG_HOME/nvim/luasnippets")
+require("luasnip.loaders.from_snipmate").lazy_load("$XDG_CONFIG_HOME/nvim/snippets")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
