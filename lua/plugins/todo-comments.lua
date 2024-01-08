@@ -1,3 +1,4 @@
+-- TODO: move this to central point where al glyphs are defined
 -- set signs for various uses
 Error_sign = " "
 Warn_sign = " "
