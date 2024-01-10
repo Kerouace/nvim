@@ -1,4 +1,4 @@
--- Abbreviations used in this article and the LuaSnip docs
+-- Abbreviation used in the LuaSnip docs
 local ls = require("luasnip")
 local s = ls.snippet
 local sn = ls.snippet_node
