@@ -355,7 +355,6 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 -- require('orgmode').setup_ts_grammar()
@@ -668,8 +667,8 @@ require("luasnip").config.set_config({
   -- TODO: :h luasnip-choicenode
 })
 
-require("luasnip.loaders.from_lua").lazy_load("$XDG_CONFIG_HOME/nvim/luasnippets")
-require("luasnip.loaders.from_snipmate").lazy_load("$XDG_CONFIG_HOME/nvim/snippets")
-
+require("luasnip.loaders.from_lua").lazy_load({path = "$XDG_CONFIG_HOME/nvim/luasnippets"})
+require("luasnip.loaders.from_snipmate").lazy_load({path = "$XDG_CONFIG_HOME/nvim/snippets"})
+vim.keymap.set('n', '<leader>es', "<cmd>lua require('luasnip.loaders').edit_snippet_files() <CR>", {desc = '[E]dit [S]nippets'})
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
