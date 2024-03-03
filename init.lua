@@ -500,6 +500,7 @@ local servers = {
   },
   verible = {},
   jdtls = {},
+  ltex = {},
 }
 
 -- Setup neovim lua configuration
