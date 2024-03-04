@@ -149,7 +149,7 @@ return {
 
   -- Math environment
   s(
-    {trig="eq", snippetType="autosnippet", dscr="Expands 'eq' into an equation environment"},
+    {trig=",eq", snippetType="autosnippet", dscr="Expands 'eq' into an equation environment"},
     fmta(
        [[
          \begin{equation*}
