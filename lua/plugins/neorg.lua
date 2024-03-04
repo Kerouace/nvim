@@ -13,6 +13,7 @@ return {
             workspaces = {
               work = "~/sync/work/notes",
               priv = "~/sync/private/notes",
+              uni = "~/sync/university/notes",
             },
             default_workspace = "work",
             index = "index.norg",
