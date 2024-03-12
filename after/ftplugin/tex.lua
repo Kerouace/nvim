@@ -1,2 +1,2 @@
-vim.bo.textwidth=80
+vim.bo.textwidth=100
 vim.wo.colorcolumn="-0"
