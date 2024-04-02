@@ -81,9 +81,9 @@ return {
     fmta(
       [[
          \begin{table}[<>]
-          \begin{tablular}{<>}
+          \begin{tabular}{<>}
             <>
-          \end{tablular}
+          \end{tabular}
          \end{table}
       ]],
        {
