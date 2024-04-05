@@ -81,15 +81,20 @@ return {
     fmta(
       [[
          \begin{table}[<>]
+          \centering
           \begin{tabular}{<>}
             <>
           \end{tabular}
+          \caption{<>}
+          \label{tab:<>}
          \end{table}
       ]],
        {
         i(1),
         i(2, "c|c"),
         i(3),
+        i(5),
+        i(4)
       }
     )
   ),
