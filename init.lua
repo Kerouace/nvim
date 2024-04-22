@@ -655,6 +655,9 @@ vim.api.nvim_create_autocmd("CursorHold", {
   end
 })
 
+-- Experimental Keybinding
+-- vim.keymap.set('n', '<leader>zn', "<cmd>lua require('zk.commands').get('ZkNew')({ title = 'daily' }) <CR>", {desc = 'test'})
+
 
 require("luasnip").config.set_config({
   -- Enable autotriggered snippets
