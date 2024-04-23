@@ -499,7 +499,7 @@ local servers = {
   },
   verible = {},
   jdtls = {},
-  ltex = {},
+  ltex = {dictionary = Dictionaries,},
   texlab = {},
   yamlls = {}
 }
@@ -657,6 +657,9 @@ vim.api.nvim_create_autocmd("CursorHold", {
 
 -- Experimental Keybinding
 -- vim.keymap.set('n', '<leader>zn', "<cmd>lua require('zk.commands').get('ZkNew')({ title = 'daily' }) <CR>", {desc = 'test'})
+
+-- Experimental
+require("utils.dictionary")
 
 
 require("luasnip").config.set_config({
