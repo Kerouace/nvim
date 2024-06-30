@@ -144,10 +144,10 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- enable nocompatible mode
-vim.o.nocompatible = true
+--vim.o.nocompatible = true
 
 -- enable syntax highlighting
-vim.o.syntax = true -- [remove?] i think this is not required
+-- vim.o.syntax = true -- [remove?] i think this is not required
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
@@ -501,7 +501,7 @@ local servers = {
   jdtls = {},
   ltex = {},
   texlab = {},
-  yamlls = {}
+  yamlls = {},
 }
 
 -- Setup neovim lua configuration
