@@ -144,7 +144,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- enable nocompatible mode
---vim.o.nocompatible = true
+-- vim.o.nocompatible = true
 
 -- enable syntax highlighting
 -- vim.o.syntax = true -- [remove?] i think this is not required
