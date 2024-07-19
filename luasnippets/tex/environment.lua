@@ -51,7 +51,9 @@ return {
     {trig=",ni", snippetType="autosnippet", dscr="Expands 'ni' to a note item for a beamer slide"},
     fmta(
       [[
-        \note[item]<<<>>>{<>}
+        \note[item]<<<>>>{
+          <>
+        }
         <>
       ]],
       {
