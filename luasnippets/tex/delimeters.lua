@@ -14,10 +14,14 @@ return {
   s( -- \section
     {trig=",sec", snippetType="autosnippet", dscr="Expands 'sec' into a \\section{}"},
     fmta(
-       "\\section<>{<>}",
+      [[
+        \\section<>{<>}
+        <>
+      ]],
        {
         i(1),
-        i(2)
+        i(2),
+        i(3)
       }
     )
   ),
@@ -30,7 +34,8 @@ return {
       ]],
        {
         i(1),
-        i(2)
+        i(2),
+        i(3)
       }
     )
   ),
