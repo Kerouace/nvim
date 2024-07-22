@@ -132,8 +132,8 @@ vim.o.clipboard = 'unnamedplus'
 
 -- setting Tab-length
 vim.o.expandtab = true  -- use spaces instead of tab
-vim.o.shiftwidth = 4    -- always use 4 spaces
-vim.o.tabstop = 4       -- as tab character
+vim.o.shiftwidth = 2    -- always use 4 spaces
+vim.o.tabstop = 2       -- as tab character
 
 -- splits open at the bottom and right
 vim.o.splitbelow = true
