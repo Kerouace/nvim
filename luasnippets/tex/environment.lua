@@ -30,15 +30,16 @@ return {
   s(
     {trig=",fr", snippetType="autosnippet", dscr="Expands 'fr' into a frame"},
     fmta(
-       [[
+      [[
         \begin{frame}
           \frametitle{<>}
-          \framesubtitle{<>}
+          \framesubtitle{\insertsection}
 
           <>
         \end{frame}
-       ]],
-       {
+        <>
+      ]],
+      {
         i(1),
         i(2),
         i(3),
