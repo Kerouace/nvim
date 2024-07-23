@@ -50,15 +50,23 @@ return {
   s(
     {trig=",cl", snippetType="autosnippet", dscr="Expands 'cl' into a columns environment"},
     fmta(
-       [[
+      [[
         \begin{columns}[c]
-          \column{<>\textwidth}
+          \begin{column}{<>\textwidth}
           <>
+          \end{column}
+          \begin{column}{<>\textwidth}
+          <>
+          \end{column}
         \end{columns}
-       ]],
-       {
-        i(1),
+        <>
+      ]],
+      {
+        i(1, "0.5"),
         i(2),
+        i(3, "0.5"),
+        i(4),
+        i(5)
       }
     )
   ),
