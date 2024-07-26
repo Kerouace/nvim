@@ -14,19 +14,54 @@ return {
   s( -- \section
     {trig=",sec", snippetType="autosnippet", dscr="Expands 'sec' into a \\section{}"},
     fmta(
-       "\\section<>{<>}",
+      [[
+        \\section<>{<>}
+        <>
+      ]],
        {
-        i(1, "*"),
-        i(2)
+        i(1),
+        i(2),
+        i(3)
       }
     )
   ),
-  s( -- \section
-    {trig=",ssec", snippetType="autosnippet", dscr="Expands 'sec' into a \\section{}"},
+  s( -- \subsection
+    {trig=",ssec", snippetType="autosnippet", dscr="Expands 'ssec' into a \\subsection{}"},
     fmta(
-       "\\subsection<>{<>}",
+      [[
+        \\subsection<>{<>}
+        <>
+      ]],
        {
-        i(1, "*"),
+        i(1),
+        i(2),
+        i(3)
+      }
+    )
+  ),
+  s( -- \subsubsection
+    {trig=",sssec", snippetType="autosnippet", dscr="Expands 'sssec' into a \\subsubsection{}"},
+    fmta(
+      [[
+        \\subsubsection<>{<>}
+        <>
+      ]],
+      {
+        i(1),
+        i(2),
+        i(3)
+      }
+    )
+  ),
+  s( -- \subsubsection
+    {trig=",par", snippetType="autosnippet", dscr="Expands 'par' into a \\paragraph{}"},
+    fmta(
+      [[
+        \\paragraph{<>}"
+        <>
+      ]],
+      {
+        i(1),
         i(2)
       }
     )

@@ -48,6 +48,23 @@ return {
   ),
 
   s(
+    {trig=",ni", snippetType="autosnippet", dscr="Expands 'ni' to a note item for a beamer slide"},
+    fmta(
+      [[
+        \note[item]<<<>>>{
+          <>
+        }
+        <>
+      ]],
+      {
+      i(1),
+      i(2),
+      i(3),
+      }
+    )
+  ),
+
+  s(
     {trig=",cl", snippetType="autosnippet", dscr="Expands 'cl' into a columns environment"},
     fmta(
       [[
