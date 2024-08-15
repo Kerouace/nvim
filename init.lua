@@ -39,10 +39,10 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
 
   -- include devicons
-  {'nvim-tree/nvim-web-devicons'},
-  {'MunifTanjim/nui.nvim'},
+  { 'nvim-tree/nvim-web-devicons' },
+  { 'MunifTanjim/nui.nvim' },
 
-  { -- Gruvebox Theme
+  {                              -- Gruvebox Theme
     'gruvbox-community/gruvbox', -- [okay]
     lazy = false,
     priority = 1000,
@@ -52,22 +52,22 @@ require('lazy').setup({
   },
 
   -- showing color of hex values, etc
-  'norcalli/nvim-colorizer.lua',  -- [self]
+  'norcalli/nvim-colorizer.lua', -- [self]
 
   -- Git related plugins
-  'tpope/vim-fugitive',	-- [Okay?]
-  'tpope/vim-rhubarb',	-- [Okay?]
+  'tpope/vim-fugitive', -- [Okay?]
+  'tpope/vim-rhubarb',  -- [Okay?]
 
   -- Detect tabstop and shiftwidth automatically
   -- 'tpope/vim-sleuth',	-- [okay]
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
-  { -- LSP Configuration & Plugins
+  {                          -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig', -- [okay]
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      'williamboman/mason.nvim', -- [okay]
+      'williamboman/mason.nvim',           -- [okay]
       'williamboman/mason-lspconfig.nvim', -- [okay]
 
       -- Useful status updates for LSP
@@ -88,22 +88,22 @@ require('lazy').setup({
     build = "make install_jsregexp"
   },
 
-  { -- Autocompletion
-    'hrsh7th/nvim-cmp', -- [okay]
+  {                                          -- Autocompletion
+    'hrsh7th/nvim-cmp',                      -- [okay]
     dependencies = { 'hrsh7th/cmp-nvim-lsp', -- [okay]
-      'hrsh7th/cmp-path',	-- [okay]
-      'hrsh7th/cmp-buffer',	-- [Okay?]
-      'L3MON4D3/LuaSnip', -- [okay]
-      'saadparwaiz1/cmp_luasnip',-- [okay]
-      'onsails/lspkind-nvim', -- [self]
+      'hrsh7th/cmp-path',                    -- [okay]
+      'hrsh7th/cmp-buffer',                  -- [Okay?]
+      'L3MON4D3/LuaSnip',                    -- [okay]
+      'saadparwaiz1/cmp_luasnip',            -- [okay]
+      'onsails/lspkind-nvim',                -- [self]
     },
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} }, -- [okay]
+  { 'folke/which-key.nvim',          opts = {} }, -- [okay]
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} }, -- [Okay?]
+  { 'numToStr/Comment.nvim',         opts = {} }, -- [Okay?]
 
   -- Fuzzy Finder (files, lsp, etc)
   { 'nvim-telescope/telescope.nvim', version = '*', dependencies = { 'nvim-lua/plenary.nvim' } }, -- [Okay?]
@@ -122,7 +122,7 @@ require('lazy').setup({
   },
 
   { -- Highlight, edit, and navigate code
-   -- Highlight, edit, and navigate code
+    -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
@@ -146,9 +146,9 @@ vim.o.clipboard = 'unnamedplus'
 
 
 -- setting Tab-length
-vim.o.expandtab = true  -- use spaces instead of tab
-vim.o.shiftwidth = 2    -- always use 4 spaces
-vim.o.tabstop = 2       -- as tab character
+vim.o.expandtab = true -- use spaces instead of tab
+vim.o.shiftwidth = 2   -- always use 4 spaces
+vim.o.tabstop = 2      -- as tab character
 
 -- splits open at the bottom and right
 vim.o.splitbelow = true
@@ -221,7 +221,7 @@ vim.o.foldenable = false
 --
 -- [[ Vim Colorizer]]
 -- norcalli/nvim-colorizer.lua
-require('colorizer').setup()    --[self]
+require('colorizer').setup() --[self]
 
 -- [[ Basic Keymaps ]]
 
@@ -302,8 +302,8 @@ vim.api.nvim_set_keymap('n', '<F7>', ':setlocal spell! spelllang=en_us<CR>',
 )
 
 -- Remap for shifting visual (keep visual selection)
-vim.keymap.set('v', '<', '<gv', {noremap = true})
-vim.keymap.set('v', '>', '>gv', {noremap = true})
+vim.keymap.set('v', '<', '<gv', { noremap = true })
+vim.keymap.set('v', '>', '>gv', { noremap = true })
 
 -- FIXME: Not working
 -- save file as sudo on files that require root permission
@@ -316,8 +316,8 @@ vim.keymap.set('v', '>', '>gv', {noremap = true})
 -- [[ Autocommands ]]
 
 -- delete trailing whitespaces on save
-vim.api.nvim_create_autocmd({'BufWritePre'}, {
-  pattern = {'*'},
+vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+  pattern = { '*' },
   command = [[%s/\s\+$//e]],
 })
 
@@ -375,13 +375,13 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- require('orgmode').setup_ts_grammar()
 --
 vim.defer_fn(function()
----@diagnostic disable-next-line: missing-fields
+  ---@diagnostic disable-next-line: missing-fields
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
     -- ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'markdown'},
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'markdown', 'yaml'},
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'markdown', 'yaml' },
 
-  -- Install parsers synchronously (only applied to `ensure_installed`)
+    -- Install parsers synchronously (only applied to `ensure_installed`)
     sync_install = false,
 
     -- Automatically install missing parsers when entering buffer
@@ -389,10 +389,10 @@ vim.defer_fn(function()
     auto_install = false,
 
     -- List of parsers to ignore installing (or "all")
-    ignore_install = { },
+    ignore_install = {},
 
-    highlight = { enable = true,},
-    indent = { enable = true},
+    highlight = { enable = true, },
+    indent = { enable = true },
     incremental_selection = {
       enable = true,
       keymaps = {
@@ -491,8 +491,8 @@ local on_attach = function(_, bufnr)
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
   nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
   nmap('<leader>wl', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, '[W]orkspace [L]ist Folders')
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, '[W]orkspace [L]ist Folders')
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
@@ -501,11 +501,11 @@ local on_attach = function(_, bufnr)
 end
 
 -- Enable the following language servers
-local servers = {
+local ensure_installed_servers = {
   clangd = {},
-  gopls = {},
+  --gopls = {},
   pyright = {},
-  rust_analyzer = {},
+  --rust_analyzer = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = "Disable" },
@@ -513,7 +513,7 @@ local servers = {
     },
   },
   verible = {},
-  jdtls = {},
+  -- jdtls = {},
   ltex = {},
   texlab = {},
   yamlls = {},
@@ -526,25 +526,43 @@ require('neodev').setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
--- Setup mason so it can manage external tooling
+
+-- Ensure the servers and tools above are installed
+--  To check the current status of installed tools and/or manually install
+--  other tools, you can run
+--    :Mason
+--
+--  You can press `g?` for help in this menu.
 require('mason').setup()
 
--- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
-
-mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
+-- You can add other tools here that you want Mason to install
+-- for you, so that they are available from within Neovim.
+local ensure_installed = vim.tbl_keys(ensure_installed_servers or {})
+local extra_tools = {
+  'stylua', -- Used to format Lua code
 }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-    }
-  end,
-}
+local setup_servers = function(server_name)
+  local server = ensure_installed_servers[server_name] or {}
+  -- This handles overriding only values explicitly passed
+  -- by the server configuration above. Useful when disabling
+  -- certain features of an LSP (for example, turning off formatting for tsserver)
+  server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+  require('lspconfig')[server_name].setup(server)
+end
+
+
+if vim.g.system_id == 'nixos' then
+  for _, server_name in pairs(ensure_installed) do -- IMPORTANT: this works only with ensure_installed not with install_
+    setup_servers(server_name)
+  end
+else
+  vim.list_extend(ensure_installed, extra_tools)
+  require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+  require('mason-lspconfig').setup { handlers = { setup_servers } }
+end
+
+
 
 -- nvim-cmp setup
 -- [self] should work
@@ -600,8 +618,8 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
-    { name = 'path'},
-    { name = 'buffer'},
+    { name = 'path' },
+    { name = 'buffer' },
     -- { name = 'orgmode'},
   },
   formatting = {
@@ -610,10 +628,10 @@ cmp.setup {
       preset = "codicons",
       maxwidth = 50,
       menu = {
-      	nvim_lsp = "[LSP]",
-      	path = "[PATH]",
+        nvim_lsp = "[LSP]",
+        path = "[PATH]",
         buffer = "[BUF]",
-      	luasnip = "[SNIP]",
+        luasnip = "[SNIP]",
         -- orgmode = "[ORG]"
       },
       symbol_map = {
@@ -691,8 +709,9 @@ require("luasnip").config.set_config({
   -- TODO: :h luasnip-choicenode
 })
 
-require("luasnip.loaders.from_lua").lazy_load({path = "$XDG_CONFIG_HOME/nvim/luasnippets"})
-require("luasnip.loaders.from_snipmate").lazy_load({path = "$XDG_CONFIG_HOME/nvim/snippets"})
-vim.keymap.set('n', '<leader>es', "<cmd>lua require('luasnip.loaders').edit_snippet_files() <CR>", {desc = '[E]dit [S]nippets'})
+require("luasnip.loaders.from_lua").lazy_load({ path = "$XDG_CONFIG_HOME/nvim/luasnippets" })
+require("luasnip.loaders.from_snipmate").lazy_load({ path = "$XDG_CONFIG_HOME/nvim/snippets" })
+vim.keymap.set('n', '<leader>es', "<cmd>lua require('luasnip.loaders').edit_snippet_files() <CR>",
+  { desc = '[E]dit [S]nippets' })
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
