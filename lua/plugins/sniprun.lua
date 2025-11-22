@@ -12,9 +12,9 @@ return {
       -- your options
       })
 
-      vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
-      vim.api.nvim_set_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
-      vim.api.nvim_set_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
+      vim.api.nvim_set_keymap('v', '<leader>r', '<Plug>SnipRun', {silent = true})
+      vim.api.nvim_set_keymap('n', '<leader>ro', '<Plug>SnipRunOperator', {silent = true})
+      vim.api.nvim_set_keymap('n', '<leader>rr', '<Plug>SnipRun', {silent = true})
     end,
   },
 }
