@@ -38,12 +38,12 @@ return {
         }))
       end, { desc = '[/] Fuzzily search in current buffer' })
 
-      map('n', '<leader>gf', builtin.git_files, { desc = 'Search [G]it [F]iles' })
-      map('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      map('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      map('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      map('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      map('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      map('n', '<leader>ff', builtin.find_files, { desc = '[F]ind [F]iles' })
+      map('n', '<leader>fg', builtin.live_grep, { desc = '[F]ind by [G]rep' })
+      map('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })
+      map('n', '<leader>fw', builtin.grep_string, { desc = '[F]ind current [W]ord' })
+      map('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind [D]iagnostics' })
+      map('n', '<leader>fG', builtin.git_files, { desc = '[F]ind [G]it files' })
     end,
   },
 

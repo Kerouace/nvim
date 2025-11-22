@@ -85,15 +85,18 @@ return {
 
           local builtin = require('telescope.builtin')
 
+          -- Goto mappings (keep g prefix - Vim convention)
           map('gd', builtin.lsp_definitions, '[G]oto [D]efinition')
           map('gr', builtin.lsp_references, '[G]oto [R]eferences')
           map('gI', builtin.lsp_implementations, '[G]oto [I]mplementation')
-          map('<leader>D', builtin.lsp_type_definitions, 'Type [D]efinition')
-          map('<leader>ds', builtin.lsp_document_symbols, '[D]ocument [S]ymbols')
-          map('<leader>ws', builtin.lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+          -- LSP actions under <leader>l
+          map('<leader>lr', vim.lsp.buf.rename, '[L]SP [R]ename')
+          map('<leader>la', vim.lsp.buf.code_action, '[L]SP Code [A]ction')
+          map('<leader>ld', builtin.lsp_document_symbols, '[L]SP [D]ocument Symbols')
+          map('<leader>lw', builtin.lsp_dynamic_workspace_symbols, '[L]SP [W]orkspace Symbols')
+          map('<leader>lt', builtin.lsp_type_definitions, '[L]SP [T]ype Definition')
 
           -- Highlight references on cursor hold
           local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -121,11 +124,12 @@ return {
             })
           end
 
-          -- Toggle inlay hints
+          -- Inlay hints (enabled by default, toggle with <leader>lh)
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-            map('<leader>th', function()
+            vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+            map('<leader>lh', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-            end, '[T]oggle Inlay [H]ints')
+            end, '[L]SP Toggle Inlay [H]ints')
           end
         end,
       })
