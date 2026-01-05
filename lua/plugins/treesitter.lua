@@ -16,6 +16,7 @@ return {
             'c', 'cpp', 'go', 'lua', 'python', 'rust',
             'tsx', 'javascript', 'typescript',
             'vimdoc', 'vim', 'bash', 'markdown', 'yaml',
+            'typst'
           },
           sync_install = false,
           auto_install = false,

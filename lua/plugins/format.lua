@@ -11,6 +11,12 @@ local formatters = {
   tex = { 'latexindent' },
   yaml = { 'yamlfmt' },
   nix = { 'alejandra' },
+  markdown = { 'prettier' },
+  json = { 'prettier' },
+  javascript = { 'prettier' },
+  typescript = { 'prettier' },
+  html = { 'prettier' },
+  css = { 'prettier' },
 }
 
 -- Mason package names (some differ from formatter names)
@@ -21,6 +27,7 @@ local mason_packages = {
   -- verible installed via lsp.lua
   'latexindent',
   'yamlfmt',
+  'prettier',
 }
 
 return {

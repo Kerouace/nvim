@@ -10,10 +10,17 @@ return {
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      -- Inline blame on by default
+      current_line_blame = true,
+      current_line_blame_opts = {
+        delay = 200,
+      },
       on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
-        vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
-        vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
+        local gs = require('gitsigns')
+        vim.keymap.set('n', '<leader>gp', gs.prev_hunk, { buffer = bufnr, desc = '[G]it [P]revious Hunk' })
+        vim.keymap.set('n', '<leader>gn', gs.next_hunk, { buffer = bufnr, desc = '[G]it [N]ext Hunk' })
+        vim.keymap.set('n', '<leader>gh', gs.preview_hunk, { buffer = bufnr, desc = '[G]it Preview [H]unk' })
+        vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame, { buffer = bufnr, desc = '[G]it Toggle [B]lame' })
       end,
     },
   }

@@ -34,7 +34,8 @@ return {
         ltex = {},
         texlab = {},
         yamlls = {},
-        vhdl_ls = {},  -- VHDL language server (was incorrectly called rust_hdl)
+        vhdl_ls = {},
+        tinymist = {},
       }
 
       -- Configure each server using new vim.lsp.config API
