@@ -84,4 +84,12 @@ return {
       end, 0)
     end,
   },
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    opts = {
+      enable = true,
+      trim_scope = 'outer',
+    },
+  },
 }
