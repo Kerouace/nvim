@@ -241,6 +241,24 @@ return {
   ),
 
   s(
+    {trig=",pic", snippetType="autosnippet", dscr="Expands 'fig' into a figure"},
+    fmta(
+       [[
+         \begin{figure}
+            \includegraphics[]{<>}
+            \caption{<>}
+            \label{<>}
+         \end{figure}
+       ]],
+       {
+        i(1),
+        i(2),
+        i(3),
+      }
+    )
+  ),
+
+  s(
     {trig=",ta", snippetType="autosnippet", dscr="Expands 'ta' into a table"},
     fmta(
       [[
@@ -263,43 +281,43 @@ return {
     )
   ),
 
-  s(
-    {trig=",row", snippetType="autosnippet", dscr="Expands 'ta' into a table"},
-    fmta(
-      [[
-        \multirow{4}{*}{<>}  &
-        Probing                   &
-        \multirow{4}{*}{<>}       &
-        \multirow{4}{*}{<>}       &
-        \num{102.4e6}             &
-        <>                        &
-        <>                        &
-        <>                        \\
-          & NI      &  &  & \num{102.4e6} & <>  & <> & <> \\
-          & SNI     &  &  & \num{102.4e6} & <>  & <> & <> \\
-          & PINI    &  &  & \num{102.4e6} & <>  & <> & <> \\ <>
-
-      ]],
-       {
-        i(1),
-        i(2),
-        i(3),
-        i(4),
-        i(5),
-        i(6),
-        i(7),
-        i(8),
-        i(9),
-        i(10),
-        i(11),
-        i(12),
-        i(13),
-        i(14),
-        i(15),
-        i(16),
-      }
-    )
-  ),
+  -- s(
+  --   {trig=",row", snippetType="autosnippet", dscr="Expands 'ta' into a table"},
+  --   fmta(
+  --     [[
+  --       \multirow{4}{*}{<>}  &
+  --       Probing                   &
+  --       \multirow{4}{*}{<>}       &
+  --       \multirow{4}{*}{<>}       &
+  --       \num{102.4e6}             &
+  --       <>                        &
+  --       <>                        &
+  --       <>                        \\
+  --         & NI      &  &  & \num{102.4e6} & <>  & <> & <> \\
+  --         & SNI     &  &  & \num{102.4e6} & <>  & <> & <> \\
+  --         & PINI    &  &  & \num{102.4e6} & <>  & <> & <> \\ <>
+  --
+  --     ]],
+  --      {
+  --       i(1),
+  --       i(2),
+  --       i(3),
+  --       i(4),
+  --       i(5),
+  --       i(6),
+  --       i(7),
+  --       i(8),
+  --       i(9),
+  --       i(10),
+  --       i(11),
+  --       i(12),
+  --       i(13),
+  --       i(14),
+  --       i(15),
+  --       i(16),
+  --     }
+  --   )
+  -- ),
   -- TEST
   -- s("tab", fmt([[
   -- \begin{{tabular}}{{{}}}
