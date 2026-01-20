@@ -15,7 +15,7 @@ return {
     {trig=",sec", snippetType="autosnippet", dscr="Expands 'sec' into a \\section{}"},
     fmta(
       [[
-        \\section<>{<>}
+        \section<>{<>}
         <>
       ]],
        {
@@ -29,7 +29,7 @@ return {
     {trig=",ssec", snippetType="autosnippet", dscr="Expands 'ssec' into a \\subsection{}"},
     fmta(
       [[
-        \\subsection<>{<>}
+        \subsection<>{<>}
         <>
       ]],
        {
@@ -43,7 +43,7 @@ return {
     {trig=",sssec", snippetType="autosnippet", dscr="Expands 'sssec' into a \\subsubsection{}"},
     fmta(
       [[
-        \\subsubsection<>{<>}
+        \subsubsection<>{<>}
         <>
       ]],
       {
@@ -57,7 +57,7 @@ return {
     {trig=",par", snippetType="autosnippet", dscr="Expands 'par' into a \\paragraph{}"},
     fmta(
       [[
-        \\paragraph{<>}"
+        \paragraph{<>}"
         <>
       ]],
       {
