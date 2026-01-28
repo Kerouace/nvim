@@ -245,7 +245,7 @@ return {
     fmta(
        [[
          \begin{figure}
-            \includegraphics[]{<>}
+            \includegraphics[width=\textwidth, keepaspectratio]{<>}
             \caption{<>}
             \label{<>}
          \end{figure}
