@@ -30,8 +30,17 @@ local function gpl_header()
   local c = get_comment_char()
   local year = os.date("%Y")
   return sn(nil, {
-    t(c .. " Copyright (C) " .. year .. " "),
+    t(c .. " SPDX-FileCopyrightText: " .. year .. " "),
     i(1, "Your Name"),
+    t(" <"),
+    i(2, "email@example.com"),
+    t({
+      ">",
+      c .. " SPDX-License-Identifier: GPL-3.0-or-later",
+      c,
+      c .. " Copyright (C) " .. year .. " ",
+    }),
+    rep(1),
     t({
       "",
       c,
@@ -47,6 +56,37 @@ local function gpl_header()
       c,
       c .. " You should have received a copy of the GNU General Public License",
       c .. " along with this program. If not, see <https://www.gnu.org/licenses/>.",
+      "",
+    }),
+  })
+end
+
+local function cern_ohl_s_header()
+  local c = get_comment_char()
+  local year = os.date("%Y")
+  return sn(nil, {
+    t(c .. " SPDX-FileCopyrightText: " .. year .. " "),
+    i(1, "Your Name"),
+    t(" <"),
+    i(2, "email@example.com"),
+    t({
+      ">",
+      c .. " SPDX-License-Identifier: CERN-OHL-S-2.0",
+      c,
+      c .. " Copyright (C) " .. year .. " ",
+    }),
+    rep(1),
+    t({
+      "",
+      c,
+      c .. " This source describes Open Hardware and is licensed under the CERN-OHL-S v2.",
+      c,
+      c .. " You may redistribute and modify this source and make products using it under",
+      c .. " the terms of the CERN-OHL-S v2 (https://ohwr.org/cern_ohl_s_v2.txt).",
+      c,
+      c .. " This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY,",
+      c .. " INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A",
+      c .. " PARTICULAR PURPOSE. Please see the CERN-OHL-S v2 for applicable conditions.",
       "",
     }),
   })
@@ -75,5 +115,14 @@ return {
       snippetType = "snippet",
     },
     { d(1, gpl_header) }
+  ),
+
+  s(
+    {
+      trig = "cern",
+      dscr = "CERN-OHL-S v2 copyright header",
+      snippetType = "snippet",
+    },
+    { d(1, cern_ohl_s_header) }
   ),
 }
