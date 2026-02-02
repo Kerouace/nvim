@@ -60,5 +60,6 @@ o.foldenable = false
 vim.filetype.add({
   extension = {
     sage = 'python',  -- Treat .sage files as Python
+    v = 'verilog',
   }
 })
