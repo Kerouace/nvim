@@ -36,6 +36,7 @@ return {
         yamlls = {},
         vhdl_ls = {},
         tinymist = {},
+        jsonls = {},
       }
 
       -- Configure each server using new vim.lsp.config API
