@@ -1,3 +1,3 @@
-return {
-  "sindrets/diffview.nvim"
-}
+-- return {
+--  "dlyongemallo/diffview-plus.nvim"
+-- }
