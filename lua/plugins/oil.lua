@@ -30,6 +30,8 @@ return {
               },
         },
       })
+      local map = vim.keymap.set
+      map('n', '<leader>ef', require("oil").open_float, { desc = "Open [E]xplorer [F]loating" })
     end
   },
 
@@ -41,5 +43,4 @@ return {
   },
   config = true,
 },
-
 }
