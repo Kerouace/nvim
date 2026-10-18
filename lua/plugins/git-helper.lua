@@ -1,3 +1,3 @@
--- return {
---  "dlyongemallo/diffview-plus.nvim"
--- }
+return {
+ "rickhowe/diffchar.vim"
+}

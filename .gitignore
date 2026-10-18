@@ -1,2 +1,6 @@
 *.spl
 *.sug
+
+# nix build output symlinks
+result
+result-*
