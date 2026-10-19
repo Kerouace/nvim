@@ -8,7 +8,14 @@
 
 local M = {}
 
+-- The workflow cheat sheet, kept with the glue it describes
+M.help_file = vim.fn.expand('~/git/dotfiles-nixos/docs/workflow.md')
+
 function M.setup()
+  -- opens in a split like :help; :vert WorkflowHelp, :tab WorkflowHelp work
+  vim.api.nvim_create_user_command('WorkflowHelp', function(opts)
+    vim.cmd({ cmd = 'split', args = { vim.fn.fnameescape(M.help_file) }, mods = opts.smods })
+  end, { desc = 'Open the workflow cheat sheet' })
   require('workflow.papis').setup()
   require('workflow.tags').setup()
 end
