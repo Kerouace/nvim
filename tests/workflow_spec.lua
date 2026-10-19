@@ -124,5 +124,88 @@ test('the sync diff goes from papis to the .bib', function()
   })
 end)
 
+local backlog = require('workflow.backlog')
+
+-- relink(text, from, to): folders relative to the notebook root, '' is the root
+test('a link moved into a subfolder climbs back to the root', function()
+  eq(backlog.relink('- see [x](0d09.md)', '', 'journal/meeting'), '- see [x](../../0d09.md)')
+end)
+
+test('URLs, anchors and absolute paths are left alone', function()
+  local text = '[k](papis://aaa111) [w](https://x.org/a) [h](#top) [a](/etc/x) [m](mailto:a@b.c)'
+  eq(backlog.relink(text, '', 'journal/meeting'), text)
+end)
+
+test('an embed keeps its title and a link its section', function()
+  eq(
+    backlog.relink('![fig](media/a.png "A") [s](0d09.md#idea)', '', 'journal/meeting'),
+    '![fig](../../media/a.png "A") [s](../../0d09.md#idea)'
+  )
+end)
+
+test('between sibling folders only the differing part changes', function()
+  eq(backlog.relink('[m](../meeting/x.md) [r](../../0d09.md)', 'journal/daily', 'journal/meeting'), '[m](x.md) [r](../../0d09.md)')
+end)
+
+test('nothing changes when both are the root', function()
+  eq(backlog.relink('[x](media/a.png)', '', ''), '[x](media/a.png)')
+end)
+
+test('items go after the last line, trailing blank lines dropped', function()
+  eq(backlog.append_end({ '# T', '', 'text', '', '' }, { '- a', '- b' }), { '# T', '', 'text', '', '- a', '- b' })
+end)
+
+test('items join a list that ends the Note', function()
+  eq(backlog.append_end({ '# T', '', '- x' }, { '- a' }), { '# T', '', '- x', '- a' })
+end)
+
+local done = backlog.done_heading
+
+test('items fill an empty section of a fresh daily note', function()
+  local daily = { '# 2026-10-19', '', '## What have I done today?', '', '', '## Open Questions.' }
+  eq(backlog.append_under(daily, done, { '- a' }), {
+    '# 2026-10-19',
+    '',
+    '## What have I done today?',
+    '',
+    '- a',
+    '',
+    '## Open Questions.',
+  })
+end)
+
+test('items follow what is already logged, subheadings included', function()
+  local daily = { '## What have I done today?', '- x', '### detail', '- y', '', '', '## Open Questions.', '- q' }
+  eq(backlog.append_under(daily, done, { '- a', '- b' }), {
+    '## What have I done today?',
+    '- x',
+    '### detail',
+    '- y',
+    '- a',
+    '- b',
+    '',
+    '## Open Questions.',
+    '- q',
+  })
+end)
+
+test('a missing heading is added at the end', function()
+  eq(backlog.append_under({ '# 2026-10-19', '', 'notes' }, done, { '- a' }), {
+    '# 2026-10-19',
+    '',
+    'notes',
+    '',
+    '## What have I done today?',
+    '',
+    '- a',
+  })
+end)
+
+test('an item is its line without the bullet', function()
+  eq(backlog.item_text('- read the RFM paper'), 'read the RFM paper')
+  eq(backlog.item_text('  * nested '), 'nested')
+  eq(backlog.item_text('no bullet'), 'no bullet')
+end)
+
 print(('%d tests, %d failed'):format(count, failures))
 os.exit(failures == 0 and 0 or 1)

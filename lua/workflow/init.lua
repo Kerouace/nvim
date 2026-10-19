@@ -19,6 +19,7 @@ function M.setup()
   require('workflow.papis').setup()
   require('workflow.tags').setup()
   require('workflow.bib').setup()
+  require('workflow.backlog').setup()
 end
 
 return M
