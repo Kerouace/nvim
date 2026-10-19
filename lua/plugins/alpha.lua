@@ -23,9 +23,9 @@ return {
       -- Set menu
       dashboard.section.buttons.val = {
         dashboard.button('n', '  New file', ':lua vim.ui.input({prompt="New file: "}, function(name) if name then vim.cmd("e " .. name) else vim.cmd("enew") end end)<CR>'),
-        dashboard.button('f', '  Find file', ':Telescope find_files <CR>'),
-        dashboard.button('r', '  Recent files', ':Telescope oldfiles <CR>'),
-        dashboard.button('g', '  Find text', ':Telescope live_grep <CR>'),
+        dashboard.button('f', '  Find file', ':FzfLua files <CR>'),
+        dashboard.button('r', '  Recent files', ':FzfLua oldfiles <CR>'),
+        dashboard.button('g', '  Find text', ':FzfLua live_grep <CR>'),
         dashboard.button('s', '  Restore Session', [[<cmd>lua require("persistence").load()<cr>]]),
         dashboard.button('c', '  Configuration', ':e $MYVIMRC<CR>'),
         dashboard.button('q', '  Quit', ':qa<CR>'),

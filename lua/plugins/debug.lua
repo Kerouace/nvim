@@ -24,9 +24,8 @@ return {
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
 
-    -- Telescope [Custom]
-    'nvim-telescope/telescope.nvim',
-    'nvim-telescope/telescope-dap.nvim',
+    -- Pickers for DAP (fzf-lua built-ins)
+    'ibhagwan/fzf-lua',
   },
   ft = { 'c', 'go', }, --'lua', 'python' },
   config = function()
@@ -132,32 +131,14 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    -- idk
-    --local telescope_dap = require('telescope').extensions.dap
+    -- DAP pickers (fzf-lua built-ins)
+    local fzf = require('fzf-lua')
 
-    vim.keymap.set({ 'n' }, '<leader>d?', function()
-        telescope_dap.commands({})
-    end, { silent = true, desc = 'DAP builtin commands' })
-
-    vim.keymap.set({ 'n' }, '<leader>dl', function()
-        telescope_dap.list_breakpoints({})
-    end, { silent = true, desc = 'DAP breakpoint list' })
-
-    vim.keymap.set({ 'n' }, '<leader>df', function()
-        telescope_dap.frames()
-    end, { silent = true, desc = 'DAP frames' })
-
-    vim.keymap.set({ 'n' }, '<leader>dv', function()
-        telescope_dap.variables()
-    end, { silent = true, desc = 'DAP variables' })
-
-    vim.keymap.set({ 'n' }, '<leader>dc', function()
-        telescope_dap.configurations()
-    end, { silent = true, desc = 'DAP debugger configurations' })
-
-    --require('telescope').load_extension('dap') -- I think this must be called after telescope
-    --setup so it cannot be called here.
-    -- But it does not work. I do not know why.
+    vim.keymap.set({ 'n' }, '<leader>d?', fzf.dap_commands, { silent = true, desc = 'DAP builtin commands' })
+    vim.keymap.set({ 'n' }, '<leader>dl', fzf.dap_breakpoints, { silent = true, desc = 'DAP breakpoint list' })
+    vim.keymap.set({ 'n' }, '<leader>df', fzf.dap_frames, { silent = true, desc = 'DAP frames' })
+    vim.keymap.set({ 'n' }, '<leader>dv', fzf.dap_variables, { silent = true, desc = 'DAP variables' })
+    vim.keymap.set({ 'n' }, '<leader>dc', fzf.dap_configurations, { silent = true, desc = 'DAP debugger configurations' })
 
 
     --

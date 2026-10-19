@@ -86,20 +86,20 @@ return {
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          local builtin = require('telescope.builtin')
+          local fzf = require('fzf-lua')
 
           -- Goto mappings (keep g prefix - Vim convention)
-          map('gd', builtin.lsp_definitions, '[G]oto [D]efinition')
-          map('gr', builtin.lsp_references, '[G]oto [R]eferences')
-          map('gI', builtin.lsp_implementations, '[G]oto [I]mplementation')
+          map('gd', fzf.lsp_definitions, '[G]oto [D]efinition')
+          map('gr', fzf.lsp_references, '[G]oto [R]eferences')
+          map('gI', fzf.lsp_implementations, '[G]oto [I]mplementation')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           -- LSP actions under <leader>l
           map('<leader>lr', vim.lsp.buf.rename, '[L]SP [R]ename')
           map('<leader>la', vim.lsp.buf.code_action, '[L]SP Code [A]ction')
-          map('<leader>ld', builtin.lsp_document_symbols, '[L]SP [D]ocument Symbols')
-          map('<leader>lw', builtin.lsp_dynamic_workspace_symbols, '[L]SP [W]orkspace Symbols')
-          map('<leader>lt', builtin.lsp_type_definitions, '[L]SP [T]ype Definition')
+          map('<leader>ld', fzf.lsp_document_symbols, '[L]SP [D]ocument Symbols')
+          map('<leader>lw', fzf.lsp_live_workspace_symbols, '[L]SP [W]orkspace Symbols')
+          map('<leader>lt', fzf.lsp_typedefs, '[L]SP [T]ype Definition')
 
           -- Highlight references on cursor hold
           local client = vim.lsp.get_client_by_id(event.data.client_id)
