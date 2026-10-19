@@ -9,6 +9,8 @@
 local M = {}
 
 function M.setup()
+  require('workflow.papis').setup()
+  require('workflow.tags').setup()
 end
 
 return M

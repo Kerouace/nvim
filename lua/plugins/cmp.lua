@@ -84,6 +84,7 @@ return {
         }),
 
         sources = {
+          { name = 'workflow_tags' }, -- existing tags in info.yaml (lua/workflow/tags.lua)
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
@@ -100,6 +101,7 @@ return {
               path = '[PATH]',
               buffer = '[BUF]',
               luasnip = '[SNIP]',
+              workflow_tags = '[TAG]',
             },
             symbol_map = {
               Text = '',

@@ -10,6 +10,14 @@ return {
         follow = true, -- Follow symlinks
       },
     })
+    -- vim.ui.select (code actions, ...) through fzf-lua; the papis link menu
+    -- takes its action letters directly
+    fzf.register_ui_select(function(ui_opts, items)
+      if ui_opts.kind == 'papis_action' then
+        return require('workflow.papis').select_opts(items)
+      end
+      return {}
+    end)
 
     -- Keymaps (same keys as the former telescope setup)
     local map = vim.keymap.set
