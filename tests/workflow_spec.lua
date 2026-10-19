@@ -99,5 +99,30 @@ test('typing the key itself is not a value', function()
   eq(tags.key_at({ 'tags:' }, 1, 3), nil)
 end)
 
+local bib = require('workflow.bib')
+
+test('one key is cited alone', function()
+  eq(bib.cite_text({ 'Ishai2003' }), '\\cite{Ishai2003}')
+end)
+
+test('several keys share one \\cite', function()
+  eq(bib.cite_text({ 'Ishai2003', 'DBLP:conf/ches/X' }), '\\cite{Ishai2003,DBLP:conf/ches/X}')
+end)
+
+test('the sync diff goes from papis to the .bib', function()
+  local lines = bib.diff_lines({
+    papis_id = 'aaa111',
+    papis = '@article{K,\n  year = {1973},\n}',
+    bib = '@article{K,\n  year = {1974},\n}',
+  })
+  eq(lines, {
+    '--- papis',
+    '+++ bib/bibliography.bib',
+    '@@ -2 +2 @@',
+    '-  year = {1973},',
+    '+  year = {1974},',
+  })
+end)
+
 print(('%d tests, %d failed'):format(count, failures))
 os.exit(failures == 0 and 0 or 1)

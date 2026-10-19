@@ -50,9 +50,10 @@ end
 -- flags (fields, preview), read once per session.
 local fzf_args
 
---- Pick References as the papis picker does; Enter inserts their links at
---- the cursor. The picker's action letters work as in the shell.
-function M.insert_link()
+--- Pick References as the papis picker does (the picker's action letters
+--- work as in the shell); Enter calls `on_ids` with the Reference IDs of
+--- the picked ones, back in the window the picker was opened from.
+function M.pick(on_ids)
   if not fzf_args then
     local json = system({ 'papis-action', '--fzf-args' })
     if not json then
@@ -69,20 +70,30 @@ function M.insert_link()
     actions = {
       esc = false,
       default = function(selected)
-        local inserted = {}
+        local ids = {}
         for _, line in ipairs(selected) do
-          local id = vim.split(line, '@@', { plain = true })[2]
-          local key = system({ 'papis', 'list', '--all', '--format', '{doc[ref]}', 'papis_id:' .. id })
-          table.insert(inserted, ('[%s](papis://%s)'):format(vim.trim(key or id), id))
+          table.insert(ids, vim.split(line, '@@', { plain = true })[2])
         end
-        if #inserted > 0 and vim.api.nvim_win_is_valid(win) then
+        if #ids > 0 and vim.api.nvim_win_is_valid(win) then
           vim.api.nvim_set_current_win(win)
           vim.api.nvim_win_set_buf(win, buf)
-          vim.api.nvim_put({ table.concat(inserted, ', ') }, 'c', true, true)
+          on_ids(ids)
         end
       end,
     },
   })
+end
+
+--- Pick References; Enter inserts their links at the cursor.
+function M.insert_link()
+  M.pick(function(ids)
+    local inserted = {}
+    for _, id in ipairs(ids) do
+      local key = system({ 'papis', 'list', '--all', '--format', '{doc[ref]}', 'papis_id:' .. id })
+      table.insert(inserted, ('[%s](papis://%s)'):format(vim.trim(key or id), id))
+    end
+    vim.api.nvim_put({ table.concat(inserted, ', ') }, 'c', true, true)
+  end)
 end
 
 -- letter, name, key, mode, description; from papis-action's action table

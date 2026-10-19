@@ -18,6 +18,7 @@ function M.setup()
   end, { desc = 'Open the workflow cheat sheet' })
   require('workflow.papis').setup()
   require('workflow.tags').setup()
+  require('workflow.bib').setup()
 end
 
 return M
