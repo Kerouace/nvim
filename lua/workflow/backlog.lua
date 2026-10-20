@@ -173,6 +173,20 @@ local function edit_note(path, change, move)
   last_move = vim.tbl_extend('force', move, { path = path, before = before, after = after })
 end
 
+--- Remove `lines` from the Backlog buffer `buf`, where they were from line
+--- `first` on, and save it; false (and a warning) when the Backlog changed
+--- there meanwhile, e.g. while a picker was open.
+function M.remove(buf, first, lines)
+  local last = first + #lines - 1
+  if not vim.deep_equal(vim.api.nvim_buf_get_lines(buf, first - 1, last, false), lines) then
+    vim.notify('The Backlog changed: remove the moved lines by hand', vim.log.levels.WARN)
+    return false
+  end
+  vim.api.nvim_buf_set_lines(buf, first - 1, last, true, {})
+  save(buf)
+  return true
+end
+
 -- The Backlog lines `first`..`last` of the current buffer as moved items
 -- (blank lines skipped), a function that removes them from the Backlog, the
 -- Backlog's folder, and the move so far (for undo).
@@ -184,13 +198,7 @@ local function take(first, last)
   end, taken)
   local move = { backlog = buf, first = first, taken = taken }
   local function remove()
-    -- the Backlog may have changed while a picker was open
-    if not vim.deep_equal(vim.api.nvim_buf_get_lines(buf, first - 1, last, false), taken) then
-      return vim.notify('The Backlog changed: remove the moved lines by hand', vim.log.levels.WARN)
-    end
-    vim.api.nvim_buf_set_lines(buf, first - 1, last, true, {})
-    save(buf)
-    if last_move then
+    if M.remove(buf, first, taken) and last_move then
       last_move.removed = true
     end
   end
@@ -297,7 +305,8 @@ function M.undo()
   vim.notify(('Undid the move to %s%s'):format(name, move.created and ' (deleted)' or ''))
 end
 
--- A keymap for normal mode (the cursor line) and visual mode (the range)
+-- A keymap for normal mode (the cursor line) and visual mode (the range;
+-- `move` gets true as a third argument)
 local function map_range(buf, lhs, move, desc)
   vim.keymap.set('n', lhs, function()
     local row = vim.fn.line('.')
@@ -306,7 +315,7 @@ local function map_range(buf, lhs, move, desc)
   vim.keymap.set('x', lhs, function()
     local first, last = vim.fn.line('v'), vim.fn.line('.')
     vim.cmd('normal! \27')
-    move(math.min(first, last), math.max(first, last))
+    move(math.min(first, last), math.max(first, last), true)
   end, { buffer = buf, desc = desc })
 end
 
@@ -321,6 +330,7 @@ function M.setup()
       map_range(args.buf, '<localleader>mm', M.to_note, '[M]ove item to a Note')
       map_range(args.buf, '<localleader>mn', M.to_new, '[M]ove item to a [N]ew Note')
       map_range(args.buf, '<localleader>md', M.to_daily, '[M]ove item to the [D]aily note (done)')
+      map_range(args.buf, '<localleader>mt', require('workflow.todo').promote, '[M]ove item to a [T]odo (cfait)')
     end,
   })
   -- in any Note, since ,mn leaves the cursor in the new Note

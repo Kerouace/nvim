@@ -99,6 +99,19 @@ test('typing the key itself is not a value', function()
   eq(tags.key_at({ 'tags:' }, 1, 3), nil)
 end)
 
+-- hashtag_at(line, col): col 0-based, the text before it is what was typed
+test('a #word being typed is a tag, hierarchy included', function()
+  eq(tags.hashtag_at('read RFM #', 10), true)
+  eq(tags.hashtag_at('#wo', 3), true)
+  eq(tags.hashtag_at('read #work:te !2', 13), true)
+end)
+
+test('outside a #word, or # inside a word, is no tag', function()
+  eq(tags.hashtag_at('read #work now', 14), false)
+  eq(tags.hashtag_at('issue#4', 7), false)
+  eq(tags.hashtag_at('read #work', 3), false)
+end)
+
 local bib = require('workflow.bib')
 
 test('one key is cited alone', function()
@@ -205,6 +218,41 @@ test('an item is its line without the bullet', function()
   eq(backlog.item_text('- read the RFM paper'), 'read the RFM paper')
   eq(backlog.item_text('  * nested '), 'nested')
   eq(backlog.item_text('no bullet'), 'no bullet')
+end)
+
+local todo = require('workflow.todo')
+
+-- from_item(line, dir): dir is the Backlog's folder
+test('a papis link becomes the url and its label stays in the title', function()
+  eq(todo.from_item('- read [Ishai2003](papis://aaa111) again', '/nb'), { text = 'read Ishai2003 again', url = 'papis://aaa111' })
+end)
+
+test('a Note link becomes a file:// url, .md added when zk dropped it', function()
+  eq(todo.from_item('- see [idea](0d09.md)', '/nb').url, 'file:///nb/0d09.md')
+  eq(todo.from_item('- see [idea](journal/x)', '/nb').url, 'file:///nb/journal/x.md')
+  eq(todo.from_item('- see [idea](../up.md)', '/nb/sub').url, 'file:///nb/up.md')
+end)
+
+test('the first link is the url; anchors and embeds are not links to a context', function()
+  eq(todo.from_item('- [a](https://a.org) and [b](papis://b)', '/nb'), { text = 'a and b', url = 'https://a.org' })
+  eq(todo.from_item('- [s](#top) ![fig](media/a.png) plain', '/nb'), { text = 's ![fig](media/a.png) plain' })
+end)
+
+test('a bare URL is the url and stays in the title', function()
+  eq(todo.from_item('- https://x.org/a#b read later', '/nb'), { text = 'https://x.org/a#b read later', url = 'https://x.org/a#b' })
+  eq(todo.from_item('- see papis://ccc333.', '/nb').url, 'papis://ccc333')
+end)
+
+test('a markdown link before a bare URL wins', function()
+  eq(todo.from_item('- [k](papis://a) https://x.org', '/nb').url, 'papis://a')
+end)
+
+-- clean(text, untouched): untouched are the snippet's tokens as expanded
+local snippet = { '!prio', '@due', '^start', '#tag' }
+
+test('untouched and emptied tabstops are dropped, filled ones kept', function()
+  eq(todo.clean('read RFM !2 @due ^ #work', snippet), 'read RFM !2 #work')
+  eq(todo.clean('read RFM !prio @due ^start #tag', snippet), 'read RFM')
 end)
 
 print(('%d tests, %d failed'):format(count, failures))
