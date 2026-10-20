@@ -1,10 +1,17 @@
 -- workflow.tags: one nvim-cmp source completing existing tags, so a tag is
 -- never typed blind. Each provider names the files it serves and the command
--- printing the existing values one per line: per YAML key, or for the `#tag`
--- being typed (cfait smart input). New values can still be typed; the list
--- only offers what exists.
+-- printing the existing values one per line: per YAML key, or per sigil of
+-- the cfait smart-input word being typed (`#tag`; `!prio`, `@due` and
+-- `^start` get fixed lists). New values can still be typed; the list only
+-- offers what exists.
 
 local M = {}
+
+-- Dates cfait understands (checked against cfait 1.2), soonest first
+local dates = {
+  'today', 'tomorrow', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
+  '2d', '1w', '2w', '1mo', '3mo', '1y',
+}
 
 M.providers = {
   {
@@ -16,7 +23,12 @@ M.providers = {
   },
   {
     filetype = 'cfait', -- the window promoting a Backlog item (workflow.todo)
-    hashtag = { 'sh', '-c', "cfait list --all --fields categories 2>/dev/null | tr ',' '\\n' | sort -u" },
+    sigils = {
+      ['#'] = { 'sh', '-c', "cfait list --all --fields categories 2>/dev/null | tr ',' '\\n' | sort -u" },
+      ['!'] = { list = { '1', '2', '3', '4', '5', '6', '7', '8', '9' } }, -- 1 is the highest
+      ['@'] = { list = dates },
+      ['^'] = { list = dates },
+    },
   },
 }
 
@@ -42,9 +54,10 @@ function M.key_at(lines, row, col)
   return nil
 end
 
---- Whether the cursor (`col` 0-based) ends a `#tag` being typed in `line`.
-function M.hashtag_at(line, col)
-  return (' ' .. line:sub(1, col)):match('%s#[^%s#]*$') ~= nil
+--- The sigil (`#`, `!`, `@` or `^`) of the cfait smart-input word the
+--- cursor (`col` 0-based) ends in `line`, or nil.
+function M.sigil_at(line, col)
+  return (' ' .. line:sub(1, col)):match('%s([#!@^])[^%s#!@^]*$')
 end
 
 local function provider_for(bufnr)
@@ -58,8 +71,8 @@ end
 
 -- The command completing at the cursor (`row` 1-based, `col` 0-based)
 local function command_at(provider, lines, row, col)
-  if provider.hashtag then
-    return M.hashtag_at(lines[row], col) and provider.hashtag or nil
+  if provider.sigils then
+    return provider.sigils[M.sigil_at(lines[row], col)]
   end
   local key = M.key_at(lines, row, col)
   return key and provider.keys[key]
@@ -68,7 +81,11 @@ end
 -- One run per command and session; callbacks wait for a run in flight.
 local cache, waiting = {}, {}
 
+-- The values of `command`: its output, or its fixed `list`
 local function values(command, callback)
+  if command.list then
+    return callback(command.list)
+  end
   local cache_key = table.concat(command, ' ')
   if cache[cache_key] then
     return callback(cache[cache_key])
@@ -106,7 +123,7 @@ function source:get_debug_name()
 end
 
 function source:get_trigger_characters()
-  return { ' ', '[', ',', '-', '#' }
+  return { ' ', '[', ',', '-', '#', '!', '@', '^' }
 end
 
 function source:get_keyword_pattern()
@@ -123,8 +140,10 @@ function source:complete(params, callback)
   end
   values(command, function(list)
     local items = {}
-    for _, value in ipairs(list) do
-      table.insert(items, { label = value, kind = vim.lsp.protocol.CompletionItemKind.Keyword })
+    for i, value in ipairs(list) do
+      -- a fixed list keeps its order (soonest date first)
+      local sort = command.list and ('%02d'):format(i) or nil
+      table.insert(items, { label = value, sortText = sort, kind = vim.lsp.protocol.CompletionItemKind.Keyword })
     end
     callback({ items = items, isIncomplete = false })
   end)

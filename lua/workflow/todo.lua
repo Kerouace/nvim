@@ -116,7 +116,8 @@ local function edit_window(entry, submit)
     title = ' Todo ',
     footer = entry.url and (' url: %s '):format(entry.url) or nil,
   })
-  local untouched = {}
+  -- the fields' tokens as expanded (e.g. `@due`), and their placeholders
+  local untouched, placeholders = {}, {}
   local function close()
     if vim.api.nvim_win_is_valid(win) then
       vim.api.nvim_win_close(win, true)
@@ -137,18 +138,56 @@ local function edit_window(entry, submit)
   vim.keymap.set('n', 'q', close, { buffer = buf, desc = 'Cancel' })
   vim.keymap.set('n', '<Esc>', close, { buffer = buf, desc = 'Cancel' })
   vim.api.nvim_create_autocmd('WinLeave', { buffer = buf, once = true, callback = close })
-  -- typing over a selected placeholder doesn't trigger nvim-cmp: ask it
-  -- while a #tag is typed
-  vim.api.nvim_create_autocmd('TextChangedI', {
-    buffer = buf,
+  -- a field entered with its placeholder (prio, due, …) is cleared, so the
+  -- menu offers everything; queued after LuaSnip's keys selecting it
+  vim.keymap.set({ 'i', 's' }, '<Plug>(workflow-todo-field)', function()
+    local node = require('luasnip').session.current_nodes[buf]
+    if vim.fn.mode() == 's' and node and placeholders[node:get_text()[1]] then
+      return "<C-g>c<Cmd>lua require('cmp').complete()<CR>"
+    end
+    return ''
+  end, { buffer = buf, expr = true })
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'LuasnipInsertNodeEnter',
     callback = function()
-      local ok, cmp = pcall(require, 'cmp')
-      local col = vim.api.nvim_win_get_cursor(0)[2]
-      if ok and not cmp.visible() and require('workflow.tags').hashtag_at(vim.api.nvim_get_current_line(), col) then
-        cmp.complete()
+      if not vim.api.nvim_buf_is_valid(buf) then
+        return true
+      end
+      if vim.api.nvim_get_current_buf() == buf then
+        vim.api.nvim_feedkeys(vim.keycode('<Plug>(workflow-todo-field)'), 'm', false)
       end
     end,
   })
+  local has_cmp, cmp = pcall(require, 'cmp')
+  if has_cmp then
+    -- Tab moves between the fields even while the menu is open (C-n/C-p
+    -- move in it)
+    local function jump(direction)
+      return cmp.mapping(function()
+        cmp.close()
+        local luasnip = require('luasnip')
+        if luasnip.jumpable(direction) then
+          luasnip.jump(direction)
+        end
+      end, { 'i', 's' })
+    end
+    cmp.setup.buffer({
+      -- only the fields' values, not the words of the item
+      sources = { { name = 'workflow_tags' } },
+      mapping = { ['<Tab>'] = jump(1), ['<S-Tab>'] = jump(-1) },
+    })
+    -- the menu again while a #tag, !prio, @due or ^start is typed (nvim-cmp
+    -- doesn't reopen it once closed, e.g. after a backspace)
+    vim.api.nvim_create_autocmd('TextChangedI', {
+      buffer = buf,
+      callback = function()
+        local col = vim.api.nvim_win_get_cursor(0)[2]
+        if not cmp.visible() and require('workflow.tags').sigil_at(vim.api.nvim_get_current_line(), col) then
+          cmp.complete()
+        end
+      end,
+    })
+  end
 
   vim.api.nvim_win_set_cursor(win, { 1, #prefix })
   vim.cmd('startinsert!')
@@ -159,6 +198,9 @@ local function edit_window(entry, submit)
       require('luasnip').snip_expand(snip)
       local line = vim.api.nvim_buf_get_lines(buf, 0, 1, true)[1]
       untouched = vim.split(line:sub(#prefix + 1), '%s+', { trimempty = true })
+      for _, token in ipairs(untouched) do
+        placeholders[token:sub(2)] = true
+      end
     end)
   end
 end
