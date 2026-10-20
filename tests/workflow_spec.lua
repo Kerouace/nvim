@@ -260,5 +260,56 @@ test('untouched and emptied tabstops are dropped, filled ones kept', function()
   eq(todo.clean('read RFM !prio @due ^start #tag', snippet), 'read RFM')
 end)
 
+local media = require('workflow.media')
+
+test('a media name is the description slugged plus the hash', function()
+  eq(media.name('Leakage in Montgomery reduction', '52ade0dd'), 'leakage-in-montgomery-reduction-52ade0dd')
+  eq(media.name('  FSM: idle -> run (v2)! ', 'abcdef01'), 'fsm-idle-run-v2-abcdef01')
+end)
+
+test('umlauts and ß are spelled out in a media name', function()
+  eq(media.name('Größe über Ärger', '00000000'), 'groesse-ueber-aerger-00000000')
+end)
+
+-- embed(description, note, file): both absolute paths
+test('an embed in a Note at the root points into ./media', function()
+  eq(media.embed('A sketch', '/nb/0d09.md', '/nb/media/a-sketch-1.png'), '![A sketch](./media/a-sketch-1.png)')
+end)
+
+test('an embed in a Note in a subfolder climbs out to media', function()
+  eq(media.embed('x', '/nb/journal/daily/2026-10-20.md', '/nb/media/x-1.png'), '![x](../../media/x-1.png)')
+end)
+
+test('brackets in the description are escaped in the embed', function()
+  eq(media.embed('a [b] c', '/nb/n.md', '/nb/media/m.png'), '![a \\[b\\] c](./media/m.png)')
+end)
+
+-- embed_at(line, col, note): col is 0-based, note the Note's absolute path
+local pair = '![one](./media/one.png) and ![two](../media/two.png)'
+
+test('the embed under the cursor resolves from the Note\'s folder', function()
+  eq(media.embed_at(pair, pair:find('one') - 1, '/nb/n.md'), '/nb/media/one.png')
+  eq(media.embed_at(pair, pair:find('two%.') - 1, '/nb/journal/n.md'), '/nb/media/two.png')
+end)
+
+test('off the embeds, the only embed on the line is taken', function()
+  local line = 'Figure: ![x](./media/x.png "Leakage 10.000 samples")'
+  eq(media.embed_at(line, 0, '/nb/n.md'), '/nb/media/x.png')
+end)
+
+test('off the embeds with several on the line, or a link, gives nothing', function()
+  eq(media.embed_at(pair, pair:find(' and ') - 1, '/nb/n.md'), nil)
+  eq(media.embed_at('[note](0d09.md)', 2, '/nb/n.md'), nil)
+end)
+
+test('an embed with a .xopp beside it opens the Drawing, else the image', function()
+  local dir = vim.fn.tempname()
+  vim.fn.mkdir(dir, 'p')
+  vim.fn.writefile({}, dir .. '/d-1.xopp')
+  eq(media.open_command(dir .. '/d-1.png'), { 'drawing-edit', dir .. '/d-1.xopp' })
+  eq(media.open_command(dir .. '/s-2.png'), { 'swayimg', dir .. '/s-2.png' })
+  vim.fn.delete(dir, 'rf')
+end)
+
 print(('%d tests, %d failed'):format(count, failures))
 os.exit(failures == 0 and 0 or 1)

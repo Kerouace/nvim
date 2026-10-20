@@ -21,6 +21,7 @@ function M.setup()
   require('workflow.bib').setup()
   require('workflow.backlog').setup()
   require('workflow.todo').setup()
+  require('workflow.media').setup()
 end
 
 return M
