@@ -127,40 +127,62 @@ local function zk(args, stdin)
   return vim.trim(result.stdout)
 end
 
--- Rewrite the Note at `path` with `change(lines)`: through its buffer when
--- it is loaded (saved, like any edit), else straight in the file, so Notes
--- that aren't open are left exactly as they were apart from the items.
 local function save(buf)
   vim.api.nvim_buf_call(buf, function()
     vim.cmd('silent write')
   end)
 end
 
-local function edit_note(path, change)
-  -- by exact name: bufnr() would take `path` as a pattern
-  local buf
-  for _, b in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_loaded(b) and vim.api.nvim_buf_get_name(b) == path then
-      buf = b
+-- The loaded buffer of the Note at `path`, by exact name (bufnr() would
+-- take `path` as a pattern)
+local function note_buf(path)
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) == path then
+      return buf
     end
-  end
-  if buf then
-    vim.api.nvim_buf_set_lines(buf, 0, -1, true, change(vim.api.nvim_buf_get_lines(buf, 0, -1, true)))
-    save(buf)
-  else
-    vim.fn.writefile(change(vim.fn.readfile(path)), path)
   end
 end
 
+local function read_note(path)
+  local buf = note_buf(path)
+  return buf and vim.api.nvim_buf_get_lines(buf, 0, -1, true) or vim.fn.readfile(path)
+end
+
+-- Through the Note's buffer when it is loaded (saved, like any edit), else
+-- straight in the file, so Notes that aren't open are left exactly as they
+-- were apart from the items.
+local function write_note(path, lines)
+  local buf = note_buf(path)
+  if buf then
+    vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
+    save(buf)
+  else
+    vim.fn.writefile(lines, path)
+  end
+end
+
+-- The last move, for undo(): the Backlog lines it took (`removed` once they
+-- left the Backlog) and the target Note before and after.
+local last_move
+
+-- Rewrite the Note at `path` with `change(lines)` and remember the move.
+local function edit_note(path, change, move)
+  local before = read_note(path)
+  local after = change(before)
+  write_note(path, after)
+  last_move = vim.tbl_extend('force', move, { path = path, before = before, after = after })
+end
+
 -- The Backlog lines `first`..`last` of the current buffer as moved items
--- (blank lines skipped), a function that removes them from the Backlog, and
--- the Backlog's folder.
+-- (blank lines skipped), a function that removes them from the Backlog, the
+-- Backlog's folder, and the move so far (for undo).
 local function take(first, last)
   local buf = vim.api.nvim_get_current_buf()
   local taken = vim.api.nvim_buf_get_lines(buf, first - 1, last, true)
   local lines = vim.tbl_filter(function(line)
     return vim.trim(line) ~= ''
   end, taken)
+  local move = { backlog = buf, first = first, taken = taken }
   local function remove()
     -- the Backlog may have changed while a picker was open
     if not vim.deep_equal(vim.api.nvim_buf_get_lines(buf, first - 1, last, false), taken) then
@@ -168,8 +190,11 @@ local function take(first, last)
     end
     vim.api.nvim_buf_set_lines(buf, first - 1, last, true, {})
     save(buf)
+    if last_move then
+      last_move.removed = true
+    end
   end
-  return lines, remove, folder(vim.api.nvim_buf_get_name(buf))
+  return lines, remove, folder(vim.api.nvim_buf_get_name(buf)), move
 end
 
 local function relinked(items, from, to)
@@ -180,7 +205,7 @@ end
 
 --- Move Backlog lines `first`..`last` to the end of a Note picked with zk.
 function M.to_note(first, last)
-  local items, remove, from = take(first, last)
+  local items, remove, from, move = take(first, last)
   if #items == 0 then
     return
   end
@@ -191,7 +216,7 @@ function M.to_note(first, last)
       local to = folder(note.absPath)
       edit_note(note.absPath, function(lines)
         return M.append_end(lines, relinked(items, from, to))
-      end)
+      end, move)
       remove()
       vim.notify(('Moved %d to %s'):format(#items, note.title or note.path))
     end
@@ -201,7 +226,7 @@ end
 --- Move Backlog lines `first`..`last` into a new Note titled with the first
 --- item, opened in a split.
 function M.to_new(first, last)
-  local items, remove, from = take(first, last)
+  local items, remove, from, move = take(first, last)
   if #items == 0 then
     return
   end
@@ -213,6 +238,7 @@ function M.to_new(first, last)
   if not path then
     return
   end
+  last_move = vim.tbl_extend('force', move, { path = path, created = true, after = vim.fn.readfile(path) })
   remove()
   vim.cmd.split(vim.fn.fnameescape(path))
 end
@@ -221,7 +247,7 @@ end
 --- have I done today?"; the note is created from the daily template if
 --- missing.
 function M.to_daily(first, last)
-  local items, remove, from = take(first, last)
+  local items, remove, from, move = take(first, last)
   if #items == 0 then
     return
   end
@@ -231,12 +257,44 @@ function M.to_daily(first, last)
     if not path then
       return
     end
+    -- undo deletes a daily note this move created
+    move.created = true
   end
   edit_note(path, function(lines)
     return M.append_under(lines, M.done_heading, relinked(items, from, folder(path)))
-  end)
+  end, move)
   remove()
   vim.notify(('Moved %d to %s'):format(#items, vim.fs.basename(path)))
+end
+
+--- Undo the last move of this session: the items go back into the Backlog
+--- and leave the target Note (a Note the move created is deleted). Only
+--- while the target is as the move left it, so no later edit is lost.
+function M.undo()
+  local move = last_move
+  if not move then
+    return vim.notify('No Backlog move to undo', vim.log.levels.WARN)
+  end
+  local name = vim.fs.basename(move.path)
+  if vim.fn.filereadable(move.path) == 0 or not vim.deep_equal(read_note(move.path), move.after) then
+    return vim.notify(name .. ' changed since the move: undo it there by hand', vim.log.levels.WARN)
+  end
+  if move.created then
+    local buf = note_buf(move.path)
+    if buf then
+      vim.api.nvim_buf_delete(buf, { force = true })
+    end
+    vim.fn.delete(move.path)
+  else
+    write_note(move.path, move.before)
+  end
+  if move.removed and vim.api.nvim_buf_is_loaded(move.backlog) then
+    local row = math.min(move.first - 1, vim.api.nvim_buf_line_count(move.backlog))
+    vim.api.nvim_buf_set_lines(move.backlog, row, row, true, move.taken)
+    save(move.backlog)
+  end
+  last_move = nil
+  vim.notify(('Undid the move to %s%s'):format(name, move.created and ' (deleted)' or ''))
 end
 
 -- A keymap for normal mode (the cursor line) and visual mode (the range)
@@ -263,6 +321,14 @@ function M.setup()
       map_range(args.buf, '<localleader>mm', M.to_note, '[M]ove item to a Note')
       map_range(args.buf, '<localleader>mn', M.to_new, '[M]ove item to a [N]ew Note')
       map_range(args.buf, '<localleader>md', M.to_daily, '[M]ove item to the [D]aily note (done)')
+    end,
+  })
+  -- in any Note, since ,mn leaves the cursor in the new Note
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'markdown',
+    group = vim.api.nvim_create_augroup('workflow.backlog.undo', {}),
+    callback = function(args)
+      vim.keymap.set('n', '<localleader>mu', M.undo, { buffer = args.buf, desc = '[M]ove: [U]ndo the last Backlog move' })
     end,
   })
 end
