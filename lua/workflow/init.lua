@@ -22,6 +22,7 @@ function M.setup()
   require('workflow.backlog').setup()
   require('workflow.todo').setup()
   require('workflow.media').setup()
+  require('workflow.check').setup()
 end
 
 return M
